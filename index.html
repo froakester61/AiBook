@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astronomy AI Chat</title>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="chat-display"></div>
+    <input type="text" id="user-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    const chatDisplay = document.getElementById('chat-display');
+    const userInput = document.getElementById('user-input');
+
+    function sendMessage() {
+        const userMessage = userInput.value;
+        displayMessage('You', userMessage);
+        userInput.value = '';
+
+        // Make an API request to your backend with the user's message
+        // Receive the AI's response and display it using displayMessage function
+        // Example: You can use JavaScript fetch API to make a request to your server
+        // and then your server can make a request to the OpenAI API.
+
+        // For simplicity, you can use OpenAI's Chat API directly in the browser, but remember
+        // to keep your API key secure if you do this in a production environment.
+
+        fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer YOUR_OPENAI_API_KEY',
+            },
+            body: JSON.stringify({
+                model: 'text-davinci-002',
+                messages: [
+                    { role: 'system', content: 'You are a helpful assistant.' },
+                    { role: 'user', content: userMessage },
+                ],
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const assistantMessage = data.choices[0].message.content;
+            displayMessage('AI', assistantMessage);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function displayMessage(sender, message) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = `${sender}: ${message}`;
+        chatDisplay.appendChild(messageElement);
+    }
+</script>
+
+</body>
+</html>
